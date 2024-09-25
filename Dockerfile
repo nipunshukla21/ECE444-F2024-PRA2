@@ -1,21 +1,11 @@
-FROM python:3.6-alpine
+FROM python:3.10
 
-ENV FLASK_APP flasky.py
-ENV FLASK_CONFIG production
+COPY . /hello
+WORKDIR /hello
 
-RUN adduser -D flasky
-USER flasky
+RUN python -m pip install -r requirements.txt
+ENV FLASK_APP=hello.py
+ENV FLASK_DEBUG=1
 
-WORKDIR /home/flasky
-
-COPY requirements requirements
-RUN python -m venv venv
-RUN venv/bin/pip install -r requirements/docker.txt
-
-COPY app app
-COPY migrations migrations
-COPY flasky.py config.py boot.sh ./
-
-# run-time configuration
 EXPOSE 5000
-ENTRYPOINT ["./boot.sh"]
+CMD ["flask", "run", "--host=0.0.0.0"]
